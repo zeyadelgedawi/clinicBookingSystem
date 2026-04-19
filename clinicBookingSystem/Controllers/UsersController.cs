@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using clinicBookingSystem.Models;
-using System.Runtime.InteropServices;
-
-namespace clinicBookingSystem.Controllers;
-
+﻿using clinicBookingSystem.Models;
+using clinicBookingSystem.Dots;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -15,19 +13,27 @@ public class UsersController : ControllerBase
     {
         _context = context;
     }
-    // تسجيل مستخدم جديد
+
     [HttpPost("register")]
-    public IActionResult Register(User user)
+    public async Task<IActionResult> Register(RegisterDto dto)
     {
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        var user = new User
+        {
+            Name = dto.Name,
+            Email = dto.Email,
+            Password = dto.Password,
+            Role = "Patient"
+        };
+
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+
         return Ok(user);
     }
-    // عرض كل المستخدمين
+
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        var users = _context.Users.ToList();
-        return Ok(users);
+        return Ok(await _context.Users.ToListAsync());
     }
 }

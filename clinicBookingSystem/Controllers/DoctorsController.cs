@@ -1,6 +1,6 @@
-﻿using clinicBookingSystem.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Runtime.InteropServices;
+﻿using Microsoft.AspNetCore.Mvc;
+using clinicBookingSystem.Models;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,19 +12,15 @@ public class DoctorsController : ControllerBase
     {
         _context = context;
     }
-    // إضافة دكتور
-    [HttpPost]
-    public IActionResult AddDoctor(DoctorProfile doctor)
-    {
-        _context.DoctorProfiles.Add(doctor);
-        _context.SaveChanges();
-        return Ok(doctor);
-    }
-    // عرض كل الدكاترة
+
     [HttpGet]
-    public IActionResult GetDoctors()
+    public async Task<IActionResult> GetAll()
     {
-        var doctors = _context.DoctorProfiles.ToList();
+        var doctors = await _context.DoctorProfiles
+            .Include(d => d.User)
+            .Include(d => d.Specialty)
+            .ToListAsync();
+
         return Ok(doctors);
     }
 }

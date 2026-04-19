@@ -15,5 +15,8 @@ namespace clinicBookingSystem.Models
         public TimeSpan AppointmentTime { get; set; }
         public string Status { get; set; } = "Pending";
         public string Notes { get; set; }
+
+        public DoctorProfile Doctor {  get; set; }
+        public User Patient { get; set; }
     }
 }

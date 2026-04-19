@@ -13,5 +13,8 @@ namespace clinicBookingSystem.Models
         public int SpecialtyId { get; set; }
         public string Bio { get; set; }
         public decimal ConsultationFee { get; set; }
+        //navigation
+        public User User {  get; set; }
+        public Specialty Specialty { get; set; }
     }
 }
