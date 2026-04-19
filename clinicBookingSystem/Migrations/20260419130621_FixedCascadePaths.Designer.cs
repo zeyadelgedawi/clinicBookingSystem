@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace clinicBookingSystem.Migrations
 {
     [DbContext(typeof(ClinicDbContext))]
-    [Migration("20260418150825_InitialLocal")]
-    partial class InitialLocal
+    [Migration("20260419130621_FixedCascadePaths")]
+    partial class FixedCascadePaths
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,10 @@ namespace clinicBookingSystem.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
+
                     b.ToTable("Appointments");
                 });
 
@@ -79,6 +83,10 @@ namespace clinicBookingSystem.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SpecialtyId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("DoctorProfiles");
                 });
@@ -138,6 +146,49 @@ namespace clinicBookingSystem.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("clinicBookingSystem.Models.Appointment", b =>
+                {
+                    b.HasOne("clinicBookingSystem.Models.DoctorProfile", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("clinicBookingSystem.Models.User", "Patient")
+                        .WithMany("Appointments")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("clinicBookingSystem.Models.DoctorProfile", b =>
+                {
+                    b.HasOne("clinicBookingSystem.Models.Specialty", "Specialty")
+                        .WithMany()
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("clinicBookingSystem.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Specialty");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("clinicBookingSystem.Models.User", b =>
+                {
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }

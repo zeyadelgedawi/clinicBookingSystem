@@ -13,6 +13,7 @@ public class ClinicDbContext : DbContext
     public DbSet<Specialty> Specialties { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
 
+    //fluent 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
@@ -31,11 +32,14 @@ public class ClinicDbContext : DbContext
         modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Doctor)
             .WithMany()
-            .HasForeignKey(a => a.DoctorId);
+            .HasForeignKey(a => a.DoctorId)
+            .OnDelete(DeleteBehavior.Restrict); 
+            
 
         modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Patient)
             .WithMany(u => u.Appointments)
-            .HasForeignKey(a => a.PatientId);
+            .HasForeignKey(a => a.PatientId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
