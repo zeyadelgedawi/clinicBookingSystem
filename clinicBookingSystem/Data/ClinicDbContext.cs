@@ -33,6 +33,7 @@ public class ClinicDbContext : DbContext
             .HasOne(a => a.Doctor)
             .WithMany()
             .HasForeignKey(a => a.DoctorId)
+            //multiple cascade phath
             .OnDelete(DeleteBehavior.Restrict); 
             
 
